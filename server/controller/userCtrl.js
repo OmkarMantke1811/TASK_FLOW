@@ -1,5 +1,7 @@
 import User from "../model/userModel.js";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
+
 
 const userCtrl ={ 
     
@@ -15,7 +17,9 @@ const userCtrl ={
 
 
         if (emailDB) {
+            console.log("This email already exists." )
             return res.status(400).json({ msg: "This email already exists." })
+                
         }
         if (password.length < 6) {
             return res.status(400).json({ msg: "Password must be at least 6 characters." })
@@ -30,6 +34,17 @@ const userCtrl ={
             name, email, password: passwordHash
         })
         await newUser.save()
+
+        jwt.sign(
+            {id: newUser._id},
+            process.env.JWT_SECRET,
+            {expiresIn: '1d'},
+            (err,token)=>{
+                if(err) throw err;
+                console.log('token', token);
+                res.cookie('token', token, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
+            }
+        )
         res.json({ msg: "Register Success!" })
     } catch (error) {
         res.status(500).json({ msg: error.message })
@@ -37,6 +52,9 @@ const userCtrl ={
 },
 
 
+
+
+//get user
 
 }
 

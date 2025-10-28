@@ -9,12 +9,14 @@ dotenv.config()
 
 const app=express()
 
+
 //cors
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,}
 ))
 
+//cookie parser middleware
 app.use(cookieParser())
 
 //middelware to parse json data

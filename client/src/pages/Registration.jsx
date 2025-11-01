@@ -59,18 +59,22 @@ const Registration = () => {
     if (!validateForm()) return // stop if form invalid
 
     try {
-      await axios.post('http://localhost:5000/api/v1/user/register', {
+       const res= await axios.post('http://localhost:5000/api/v1/user/register', {
         name,
         email,
         password,
         confirmPassword,
-      })
+      },{withCredentials:true})
+
+      console.log(res.headers['set-cookie'])
+      console.log(res.data.msg)
+      console.log(res)
 
       alert('Registration successful!')
       dispatch({ type: 'RESET' })
     } catch (error) {
-      console.error(error)
-      alert('Registration failed!')
+      console.error(error.response.data.msg || error.message)
+      alert(error.response.data.msg || error.message)
     }
   }
 
